@@ -101,18 +101,18 @@ export default function UserDetailPage() {
 
         {/* ナビゲーション */}
         <div className="flex justify-center gap-4 mb-8">
-          <Link
-            href="/"
+          <button
+            onClick={() => window.location.href = '/'}
             className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
           >
             ← トップページ
-          </Link>
-          <Link
-            href={`/${employee.id}`}
+          </button>
+          <button
+            onClick={() => window.location.href = `/${employee.id}`}
             className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
           >
             評価する
-          </Link>
+          </button>
         </div>
 
         {/* タブナビゲーション */}
@@ -283,6 +283,20 @@ export default function UserDetailPage() {
                       <div className="mt-3 p-3 bg-gray-50 rounded border-l-2 border-indigo-200">
                         <p className="text-sm text-gray-700">
                           <strong>コメント:</strong> {evaluation.comments}
+                        </p>
+                      </div>
+                    )}
+                    {evaluation.aiAnalysis && (
+                      <div className="mt-3 p-3 bg-blue-50 rounded border-l-2 border-blue-200">
+                        <p className="text-sm text-blue-700">
+                          <strong>AI分析:</strong> {evaluation.aiAnalysis}
+                        </p>
+                      </div>
+                    )}
+                    {evaluation.detailedFeedback && (
+                      <div className="mt-3 p-3 bg-green-50 rounded border-l-2 border-green-200">
+                        <p className="text-sm text-green-700">
+                          <strong>詳細フィードバック:</strong> {evaluation.detailedFeedback}
                         </p>
                       </div>
                     )}

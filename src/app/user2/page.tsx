@@ -1,13 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { addEvaluation } from '@/lib/storage';
 import { Evaluation } from '@/types';
+import { evaluateEmployeeWithAI, EvaluationRequest } from '@/lib/gemini';
 
 export default function User2EvaluationPage() {
-  const router = useRouter();
   const [evaluatorName, setEvaluatorName] = useState('');
   const [scores, setScores] = useState({
     salesSkill: 5,
@@ -54,24 +53,48 @@ export default function User2EvaluationPage() {
     setIsSubmitting(true);
 
     try {
-      const totalScore = calculateTotalScore();
-      const points = calculatePoints(totalScore);
+      // AI評価を実行
+      const aiRequest: EvaluationRequest = {
+        employeeName,
+        evaluatorName: evaluatorName.trim(),
+        salesSkill: scores.salesSkill,
+        communication: scores.communication,
+        teamwork: scores.teamwork,
+        leadership: scores.leadership,
+        customerService: scores.customerService,
+        comments: comments.trim()
+      };
+
+      const aiResponse = await evaluateEmployeeWithAI(aiRequest);
       
+      // AI評価が無効と判定された場合
+      if (!aiResponse.isValid) {
+        alert('評価の妥当性に問題があります。より具体的で建設的な評価をお願いします。');
+        setIsSubmitting(false);
+        return;
+      }
+
       const evaluation: Evaluation = {
         id: Date.now().toString(),
         employeeId,
         evaluatorName: evaluatorName.trim(),
         date: new Date().toISOString(),
         scores,
-        totalScore,
-        points,
-        comments: comments.trim()
+        totalScore: aiResponse.totalScore,
+        points: aiResponse.points,
+        comments: comments.trim(),
+        aiAnalysis: aiResponse.aiAnalysis,
+        detailedFeedback: aiResponse.detailedFeedback,
+        isValid: aiResponse.isValid,
+        recommendations: aiResponse.recommendations
       };
 
       addEvaluation(employeeId, evaluation);
       
-      alert(`評価が完了しました！\n${employeeName}さんに${points}ポイントが付与されました。`);
-      router.push('/');
+      alert(`AI評価完了！\n${employeeName}さんに${aiResponse.points}ポイントが付与されました。\n\nAI分析: ${aiResponse.aiAnalysis}`);
+      
+      // TOPページに戻る（強制リロード）
+      window.location.href = '/';
     } catch (error) {
       console.error('評価の保存に失敗しました:', error);
       alert('評価の保存に失敗しました。もう一度お試しください。');

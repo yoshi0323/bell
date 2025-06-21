@@ -24,6 +24,10 @@ export interface Evaluation {
   totalScore: number;
   points: number;
   comments: string;
+  aiAnalysis?: string;
+  detailedFeedback?: string;
+  isValid?: boolean;
+  recommendations?: string[];
 }
 
 // 評価履歴の型定義

@@ -108,14 +108,21 @@ export default function Home() {
                 </div>
               </div>
               
-              <div className="mb-4">
+                              <div className="mb-4">
                 <div className="text-sm text-gray-600 mb-1">
                   評価回数: {employee.evaluations.length}回
                 </div>
                 {employee.evaluations.length > 0 && (
-                  <div className="text-sm text-gray-600">
-                    最新評価: {new Date(employee.evaluations[employee.evaluations.length - 1].date).toLocaleDateString()}
-                  </div>
+                  <>
+                    <div className="text-sm text-gray-600 mb-1">
+                      最新評価: {new Date(employee.evaluations[employee.evaluations.length - 1].date).toLocaleDateString()}
+                    </div>
+                    {employee.evaluations[employee.evaluations.length - 1].aiAnalysis && (
+                      <div className="text-xs text-blue-600 bg-blue-50 p-2 rounded mt-2">
+                        AI分析: {employee.evaluations[employee.evaluations.length - 1].aiAnalysis?.substring(0, 100)}...
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
 
@@ -126,12 +133,12 @@ export default function Home() {
                 >
                   評価する
                 </Link>
-                <Link
-                  href={`/user/${employee.id}`}
+                <button
+                  onClick={() => window.location.href = `/user/${employee.id}`}
                   className="flex-1 text-center py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors"
                 >
                   詳細
-                </Link>
+                </button>
               </div>
             </div>
           ))}

@@ -182,12 +182,12 @@ export default function AdminPage() {
                           {employee.points}
                         </div>
                         <div className="text-sm text-gray-500">ポイント</div>
-                        <Link
-                          href={`/user/${employee.id}`}
+                        <button
+                          onClick={() => window.location.href = `/user/${employee.id}`}
                           className="mt-2 inline-block px-3 py-1 bg-indigo-600 text-white text-sm rounded hover:bg-indigo-700 transition-colors"
                         >
                           詳細
-                        </Link>
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -238,6 +238,13 @@ export default function AdminPage() {
                       <div className="mt-3 p-3 bg-white rounded border-l-2 border-gray-200">
                         <p className="text-sm text-gray-700">
                           <strong>コメント:</strong> {history.comments}
+                        </p>
+                      </div>
+                    )}
+                    {(history as EvaluationHistory & { aiAnalysis?: string }).aiAnalysis && (
+                      <div className="mt-3 p-3 bg-blue-50 rounded border-l-2 border-blue-200">
+                        <p className="text-sm text-blue-700">
+                          <strong>AI分析:</strong> {(history as EvaluationHistory & { aiAnalysis?: string }).aiAnalysis}
                         </p>
                       </div>
                     )}
